@@ -33,30 +33,39 @@ function Dashboard() {
     const end_time= "2021-11-20";//'2021-5-15';]
 
     //initial const variables
+
+    const NAME_MONTH = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
     const init_emphasisStyle = {
         itemStyle: {
             shadowBlur: 10,
             shadowColor: 'rgba(0,0,0,0.3)'
         }
     };
-    const init_today = new Date()
 
     //initial all state variables
-    const [nmi_id, setNMI] = useState('');
+    const [nmi_id, setNMI] = useState(nmi);
     const [rangeClicked, setRangeClicked] = useState(false);
     const [usageEList, setUsageEList] = useState([]);
     const [usageBlist, setUsageBList] = useState([]);
     const [costList, setCostList] = useState([]);
     const [option, setOption] = useState({});
-    const [startDate, setStartDate] = useState(new Date(start_time));
-    const [endDate, setEndDate] = useState(new Date(end_time));
 
-    const date = [new Date(), new Date()];
+    const [startDate, setStartDate] = useState(new Date(start_time));
+    // const [startDate, setStartDate] = useState(start_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(start_time.split('-')[1])-1]);
+
+    const [endDate, setEndDate] = useState(new Date(end_time));
+    // const [endDate, setEndDate] = useState(end_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(end_time.split('-')[1])-1]);
+
+
+    const[date, setDate] = useState([new Date(), new Date()]);
     const [selectionRange, setSelectionRagne] = useState({startDate: date[0], endDate: date[1], key:'selection'});
 
     const [billList, setBillList] = useState([{period:'29 Apr 21 - 28 Jul 21', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}, 
                         {period:'29 Apr 21 - 28 Jul 22', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}, 
                         {period:'29 Apr 21 - 28 Jul 23', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}]);
+
     const [totalCharge, setTotalCharge] = useState(0);
     const [avgCharge, setAvgCharge] = useState(0);
     const [totalConsumption, setTotalConsumption] = useState(0);
@@ -64,47 +73,61 @@ function Dashboard() {
     const [avgConsumptionDay, setAvgConsumptionDay] = useState(0);
     const [currentPlan, setCurrentPlan] = useState('');
 
-    // var todayString = init_today.getDate() + ' ' + NAME_MONTH[init_today.getMonth()] + ' ' + init_today.getFullYear();
-    // const [today, setToday] = useState(todayString);
-    const [today, setToday] = useState(new Date());
+    const init_today = new Date()
+    var todayString = init_today.getDate() + ' ' + NAME_MONTH[init_today.getMonth()] + ' ' + init_today.getFullYear();
+    const [today, setToday] = useState(todayString);
+    // const [today, setToday] = useState(new Date());
 
-
-    const [emphasisStyle, setEmphasisStyle] = useState(init_emphasisStyle)
+    const [emphasisStyle, setEmphasisStyle] = useState(init_emphasisStyle);
     
     // Change Plan Button - Open Our Plans in iO Energy Website in the same tab
-    const handleChangePlanClick = () => {
+    function handleChangePlanClick(){
         window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
     };
 
-    const handleRangeClick = (state) => {
-        setRangeClicked(!state.rangeClicked)
+    // Handle whether new range is clicked.
+    // const handleRangeClick = (state) => {
+    //     setRangeClicked(!state.rangeClicked)
+    // };
+    function handleRangeClick() {
+        setRangeClicked(!rangeClicked);
     };
 
-    function handleSelect(date){
-        const sr = {
+    // Select date range in the calendar
+    const handleSelect = (date) => {
+        const new_range = {
             startDate: date.selection.startDate,
             endDate: date.selection.endDate,
             key: 'selection',
-        }
-        setSelectionRagne(selectionRange = sr)
+        };
+        setSelectionRagne(new_range);
     };
 
+    //initialize
+    handleUIupdate(false, start_time, end_time);
+
+    // Update all data on User Consumption page.
     function handleUIupdate(init, start_date, end_date){
-        // const _this = this;
         console.log(init);
 
         if (!init) {
             console.log('initialize');
-        } else {
+        } 
+        else {
             console.log('request');
+
             start_date = selectionRange.startDate.getFullYear().toString()+'-'+ (selectionRange.startDate.getMonth()+1).toString() +'-' + selectionRange.startDate.getDate().toString();
+
             end_date = selectionRange.endDate.getFullYear().toString() + '-'+ (selectionRange.endDate.getMonth()+1).toString() + '-'+ selectionRange.endDate.getDate().toString(); 
+
+
         }
         
         const data = {'nmi_id': nmi_id, 'start':start_date, 'end':end_date};
 
         console.log(selectionRange);
         console.log(data);
+
         // send request
         axios.post('http://localhost:8000/page1/', data).then((res) => {
             const result = res;
@@ -185,7 +208,7 @@ function Dashboard() {
                         type: 'bar',
                         stack: 'one',
                         data: res.data.avg_consumption_hour,
-                        emphasis: this.state.emphasisStyle,
+                        emphasis: emphasisStyle,
                         itemStyle: {
                             normal: {
                                 color: '#81F1C5',
@@ -210,7 +233,7 @@ function Dashboard() {
                         type: 'bar',
                         stack: 'one',
                         data: res.data.avg_feedin_hour,
-                        emphasisStyle: this.state.emphasisStyle,
+                        emphasisStyle: emphasisStyle,
                         itemStyle: {
                             normal: {
                                 color: '#FFFF00',
@@ -232,9 +255,9 @@ function Dashboard() {
         // handle rangeClick and display on title
         if (init){
 
-            setRangeClicked(!state.rangeClicked);
-            setStartDate(state.selectionRange.startDate.getDate().toString() + ' ' + NAME_MONTH[state.selectionRange.startDate.getMonth()]);
-            setEndDate(state.selectionRange.endDate.getDate().toString() + ' ' + NAME_MONTH[state.selectionRange.endDate.getMonth()]);
+            setRangeClicked(!rangeClicked);
+            setStartDate(selectionRange.startDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.startDate.getMonth()]);
+            setEndDate(selectionRange.endDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.endDate.getMonth()]);
 
         }
     };
