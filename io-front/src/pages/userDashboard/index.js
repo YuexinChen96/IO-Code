@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Link, Redirect} from 'react-router-dom';
 
 import {DateRange} from 'react-date-range';
@@ -52,19 +52,17 @@ function Dashboard() {
     const [costList, setCostList] = useState([]);
     const [option, setOption] = useState({});
 
-    const [startDate, setStartDate] = useState(new Date(start_time));
-    // const [startDate, setStartDate] = useState(start_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(start_time.split('-')[1])-1]);
+    // const [startDate, setStartDate] = useState(new Date(start_time));
+    const [startDate, setStartDate] = useState(start_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(start_time.split('-')[1])-1]);
 
-    const [endDate, setEndDate] = useState(new Date(end_time));
-    // const [endDate, setEndDate] = useState(end_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(end_time.split('-')[1])-1]);
+    // const [endDate, setEndDate] = useState(new Date(end_time));
+    const [endDate, setEndDate] = useState(end_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(end_time.split('-')[1])-1]);
 
 
     const[date, setDate] = useState([new Date(), new Date()]);
     const [selectionRange, setSelectionRagne] = useState({startDate: date[0], endDate: date[1], key:'selection'});
 
-    const [billList, setBillList] = useState([{period:'29 Apr 21 - 28 Jul 21', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}, 
-                        {period:'29 Apr 21 - 28 Jul 22', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}, 
-                        {period:'29 Apr 21 - 28 Jul 23', consump:'500', Peek:'500', Amount:'500', Paid:'NO'}]);
+    const [billList, setBillList] = useState([]);
 
     const [totalCharge, setTotalCharge] = useState(0);
     const [avgCharge, setAvgCharge] = useState(0);
@@ -81,15 +79,12 @@ function Dashboard() {
     const [emphasisStyle, setEmphasisStyle] = useState(init_emphasisStyle);
     
     // Change Plan Button - Open Our Plans in iO Energy Website in the same tab
-    function handleChangePlanClick(){
+    const handleChangePlanClick = () => {
         window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
     };
 
     // Handle whether new range is clicked.
-    // const handleRangeClick = (state) => {
-    //     setRangeClicked(!state.rangeClicked)
-    // };
-    function handleRangeClick() {
+    const handleRangeClick = () => {
         setRangeClicked(!rangeClicked);
     };
 
@@ -103,11 +98,10 @@ function Dashboard() {
         setSelectionRagne(new_range);
     };
 
-    //initialize
-    handleUIupdate(false, start_time, end_time);
-
     // Update all data on User Consumption page.
-    function handleUIupdate(init, start_date, end_date){
+    // console.log("HandleUIupdate defined")
+    const handleUIupdate = (init, start_date, end_date) => {
+        
         console.log(init);
 
         if (!init) {
@@ -254,7 +248,6 @@ function Dashboard() {
         
         // handle rangeClick and display on title
         if (init){
-
             setRangeClicked(!rangeClicked);
             setStartDate(selectionRange.startDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.startDate.getMonth()]);
             setEndDate(selectionRange.endDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.endDate.getMonth()]);
@@ -262,9 +255,11 @@ function Dashboard() {
         }
     };
     
-
-    
-
+    //initialize
+    // console.log("handleUIupdate initialised")\
+    useEffect(()=>{handleUIupdate(false, start_time, end_time);}, []);
+    // handleUIupdate(false, start_time, end_time);
+    // console.log("111111111111111111111111111111111111111111111")
     //const greeting = 'Hello Function Component!';
     return (
         <DashboardWrapper>
@@ -302,7 +297,7 @@ function Dashboard() {
                     <SelectBox>
                         {rangeClicked?
                         <div>
-                            <SelectButton onClick={handleUIupdate}>
+                            <SelectButton onClick={() => handleUIupdate(true, none, none)}>
                                 Search
                             </SelectButton>
                             <DateRange
@@ -417,6 +412,7 @@ function Dashboard() {
         </DashboardWrapper>
     );
 }
+
 
 
 // class Dashboard extends PureComponent {
