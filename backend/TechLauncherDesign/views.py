@@ -25,6 +25,8 @@ def array2dfetchall(cursor):
         for row in cursor.fetchall()
     ]
 '''
+
+
 # API for page1: user consumption
 def Page2_getData(request):
     if request.method == 'POST':
@@ -96,45 +98,46 @@ def Page2_getData(request):
         return HttpResponse(results)
         '''
 
+
 # API for page2: energy
 def Page1_getData(request):
     if request.method == 'POST':
         dic = {}
         if request.body:
-            json_str = request.body 
-            json_dict = json.loads(json_str) 
+            json_str = request.body
+            json_dict = json.loads(json_str)
             nmi_id = json_dict.get("nmi_id", 0)
             time_start = json_dict.get("start", 0)
             time_end = json_dict.get("end", 0)
             usageAndcharge_dict, plan_info, current_planRate, plan = getPage1data(nmi_id, time_start, time_end)
-            renewables,each_energy = getPage2data()
-            ret_json = get_userinfo_json(usageAndcharge_dict, plan_info, renewables,each_energy, current_planRate, plan)
+            renewables, each_energy = getPage2data()
+            ret_json = get_userinfo_json(usageAndcharge_dict, plan_info, renewables, each_energy, current_planRate,
+                                         plan)
             if time_start and time_end:
-            #     data_search = time_start + ' ' + time_end
-            #     dic['data'] = data_search
-            #     charges_amount = '62.05'
-            #     charges_percent = '25%'
-            #     dic['charges'] = [6 for i in range(24)]
-            #     consumption_amount = '147.16'
-            #     consumption_percent = '24.3%'
-            #     dic['consumption'] = [consumption_amount, consumption_percent]
-            #     dic['current_plan'] = 'Millennium'
-            #     charges_detail_list = []
-            #     for i in range(0, 25, 2):
-            #         charges_list = {}
-            #         charges_list['time'] = i
-            #         charges_list['charges'] = 3.57
-            #         charges_list['consumption'] = 3.57
-            #         charges_list['date'] = '21 Aug 2021'
-            #         charges_list['daily_avg'] = '6.31'
-            #         charges_detail_list.append(charges_list)
-            #     dic['charges_detail'] = charges_detail_list
-            
-            #     dic = json.dumps(dic)
+                #     data_search = time_start + ' ' + time_end
+                #     dic['data'] = data_search
+                #     charges_amount = '62.05'
+                #     charges_percent = '25%'
+                #     dic['charges'] = [6 for i in range(24)]
+                #     consumption_amount = '147.16'
+                #     consumption_percent = '24.3%'
+                #     dic['consumption'] = [consumption_amount, consumption_percent]
+                #     dic['current_plan'] = 'Millennium'
+                #     charges_detail_list = []
+                #     for i in range(0, 25, 2):
+                #         charges_list = {}
+                #         charges_list['time'] = i
+                #         charges_list['charges'] = 3.57
+                #         charges_list['consumption'] = 3.57
+                #         charges_list['date'] = '21 Aug 2021'
+                #         charges_list['daily_avg'] = '6.31'
+                #         charges_detail_list.append(charges_list)
+                #     dic['charges_detail'] = charges_detail_list
+
+                #     dic = json.dumps(dic)
 
                 # request.session['nmi_name'] = nmi_name
                 # print(request.session.get('nmi_name'))
-
                 return HttpResponse(ret_json)
             else:
                 return HttpResponse('input error')
@@ -143,3 +146,24 @@ def Page1_getData(request):
 
     else:
         return HttpResponse('method error')
+
+
+def Nmi_getData(request):
+    if request.method == 'POST':
+        dic = {}
+        if request.body:
+            json_str = request.body
+            json_dict = json.loads(json_str)
+            email = json_dict.get("email", 0)
+            nmi_json = get_nmi_json(email)
+            return HttpResponse(nmi_json)
+        else:
+            return HttpResponse('empty input')
+
+    else:
+        return HttpResponse('method error')
+
+
+
+
+
