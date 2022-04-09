@@ -123,7 +123,7 @@ function Dashboard() {
         console.log(data);
 
         // send request
-        axios.post('http://localhost:8000/page1/', data).then((res) => {
+        axios.post('http://ec2-13-210-76-1.ap-southeast-2.compute.amazonaws.com:8000/page1/', data).then((res) => {
             const result = res;
             console.log(result);
 
