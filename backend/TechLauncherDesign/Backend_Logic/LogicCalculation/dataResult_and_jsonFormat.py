@@ -4,7 +4,7 @@ import pandas as pd
 import json
 from dateutil import rrule
 from .encapsulation_functions.page1_cal import getuser_usage_charge,get_recommend_plan
-from .encapsulation_functions.get_data_from_database import get_user_consumption, get_user_info
+from .encapsulation_functions.get_data_from_database import get_user_consumption, get_user_info, account_to_nmi_init
 from .encapsulation_functions.page2_cal import get_nem_sa_data
 
 
@@ -72,10 +72,6 @@ def getPage2data():
 # get the cunsumption color based on the planrate
 def get_color_consumption(plan):
     color = ['#E6FCF4' for i in range(24)] #green
-    # #FFF3F8 red
-    # #E6FCF4 green
-    # #81F1C5 dark green
-    # #FF127F dark red
     if plan == 1:
         for i in range(24):
             if 1 <= i <= 5:
@@ -113,10 +109,6 @@ def get_color_consumption(plan):
 # get the color based on the planrate
 def get_color_feedin(plan):
     color = ['#C0F8E2' for i in range(24)]  # green
-    # #FFF3F8 red
-    # #E6FCF4 green
-    # #81F1C5 dark green
-    # #FF127F dark red
     if plan == 1:
         for i in range(24):
             if 1 <= i <= 5:
@@ -304,7 +296,13 @@ def get_userinfo_json(usageAndcharge_dict, plan_info, renewables, each_energy, c
     print(user_info)
     return user_info
 
-
+def get_nmi_json(email):
+    all_nmi, userinfo_init = account_to_nmi_init(email)
+    nmi_info = {}
+    data = json.loads(json.dumps(nmi_info))
+    data['nmi'] = all_nmi
+    nmi_info = json.dumps(data, ensure_ascii=False)
+    return nmi_info
 
 
 

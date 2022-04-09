@@ -6,7 +6,8 @@ def getuser_usage_charge(start,end,plan_id,datadict):
 
     # datadict=np.insert(datadict[:,1:].astype(float),0,datadict[:,0],axis=1)
     # print(datadict[0])
-    # print(datadict[:3])
+    for onedata in datadict:
+        onedata[0]=str(onedata[0])[:13]
     firstdayhour = int(datadict[0][0].split(' ')[-1])
     firstday = datadict[0][0].split(' ')[0]
     for i in range(firstdayhour-1,-1,-1):

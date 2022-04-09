@@ -6,6 +6,7 @@ from dateutil import tz
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 import configparser as cp
+import os
 
 
 # ----------------------------------------------------
@@ -23,7 +24,8 @@ def getSQLConfig(filename, dbname):
     return address
 
 
-# getSQLConfig("SQLConfig.config", "Database_sandbox")
+# print(getSQLConfig(f"{os.path.abspath(__file__).split('Backend_Logic')[0]}Backend_Logic/LogicCalculation"
+#                    f"/encapsulation_functions/SQLConfig.config", "Database_sandbox"))
 
 # ----------------------------------------------------
 # cast sql result into list
@@ -51,7 +53,9 @@ def changeTimeZone(time, timezone):
 def account_to_nmi_init(email):
     # create cursor
 
-    conn = psycopg2.connect(getSQLConfig("SQLConfig.config", "Database_sandbox"))
+    conn = psycopg2.connect(getSQLConfig(f"{os.path.abspath(__file__).split('Backend_Logic')[0]}Backend_Logic"
+                                         f"/LogicCalculation/encapsulation_functions/SQLConfig.config",
+                                         "Database_sandbox"))
     cur = conn.cursor()
 
     sql_cmd_nmi = "select nmi, account_name, title, customer_type, " \
@@ -92,7 +96,9 @@ def account_to_nmi_init(email):
 # ----------------------------------------------------
 def get_user_info(nmiID):
     # create cursor
-    conn = psycopg2.connect(getSQLConfig("SQLConfig.config", "Database_sandbox"))
+    conn = psycopg2.connect(getSQLConfig(f"{os.path.abspath(__file__).split('Backend_Logic')[0]}Backend_Logic"
+                                         f"/LogicCalculation/encapsulation_functions/SQLConfig.config",
+                                         "Database_sandbox"))
     cur = conn.cursor()
 
     sql_userInfo = "select * from " \
@@ -128,7 +134,9 @@ def get_user_info(nmiID):
 # ----------------------------------------------------
 def get_user_consumption(nmiID, start, end):
     # create cursor
-    conn = psycopg2.connect(getSQLConfig("SQLConfig.config", "Database_sandbox"))
+    conn = psycopg2.connect(getSQLConfig(f"{os.path.abspath(__file__).split('Backend_Logic')[0]}Backend_Logic"
+                                         f"/LogicCalculation/encapsulation_functions/SQLConfig.config",
+                                         "Database_sandbox"))
     cur = conn.cursor()
 
     # change query time to UTC
@@ -208,7 +216,9 @@ def get_user_consumption(nmiID, start, end):
 # return energy share data for latest 3 years: type=list
 # ----------------------------------------------------
 def get_energy_share_3y():
-    conn = psycopg2.connect(getSQLConfig("SQLConfig.config", "Database_sandbox"))
+    conn = psycopg2.connect(getSQLConfig(f"{os.path.abspath(__file__).split('Backend_Logic')[0]}Backend_Logic"
+                                         f"/LogicCalculation/encapsulation_functions/SQLConfig.config",
+                                         "Database_sandbox"))
     cur = conn.cursor()
 
     end_date = datetime.datetime.now() - relativedelta(days=10)
