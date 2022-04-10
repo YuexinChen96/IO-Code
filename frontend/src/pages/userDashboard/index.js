@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { initUpdate } from '../../store/actions/userDashboardAction'
+import { initUpdate, UIUpdate } from '../../store/actions/userDashboardAction'
 
 import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -42,66 +42,28 @@ const Dashboard = () => {
     };
     // testing
     const email = 'Usfkz@Xflkv.com'
+    const start_time = '2021-11-01' //'2021-5-1';
+    const end_time= "2021-11-20"//'2021-5-15';]
 
     // declare redux
     const dispatch = useDispatch()
     const userDashboard = useSelector(state => state.userDashboard)
     const { init, nmi, nmi_id } = userDashboard
-
-    // console.log(init);
-    if (!init) {
-        console.log('initialize dashboard. ')
-        useEffect(() => {
-            dispatch(initUpdate(email))
-        }, [dispatch])
-    }
-    
-    
- 
-    // first call to get the nmi
-
-
-
-    // temp variables
-    // const nmi = '2001010596';//;"2001010418"
-    const start_time = '2021-11-01' ;//'2021-5-1';
-    const end_time= "2021-11-20";//'2021-5-15';]
-
-
-    //initial all state variables
-    // const [nmi_id, setNMI] = useState(nmi);
-    const [rangeClicked, setRangeClicked] = useState(false);
-    const [usageEList, setUsageEList] = useState([]);
-    const [usageBlist, setUsageBList] = useState([]);
-    const [costList, setCostList] = useState([]);
-    const [option, setOption] = useState({});
-
-    // const [startDate, setStartDate] = useState(new Date(start_time));
-    const [startDate, setStartDate] = useState(start_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(start_time.split('-')[1])-1]);
-
-    // const [endDate, setEndDate] = useState(new Date(end_time));
-    const [endDate, setEndDate] = useState(end_time.split('-')[2] + ' ' + NAME_MONTH[parseInt(end_time.split('-')[1])-1]);
-
-
-    const[date, setDate] = useState([new Date(), new Date()]);
-    const [selectionRange, setSelectionRagne] = useState({startDate: date[0], endDate: date[1], key:'selection'});
-
-    const [billList, setBillList] = useState([]);
-
-    const [totalCharge, setTotalCharge] = useState(0);
-    const [avgCharge, setAvgCharge] = useState(0);
-    const [totalConsumption, setTotalConsumption] = useState(0);
-    const [avgConsumption, setAvgConsumption] = useState(0);
-    const [avgConsumptionDay, setAvgConsumptionDay] = useState(0);
-    const [currentPlan, setCurrentPlan] = useState('');
-
-    const init_today = new Date()
-    var todayString = init_today.getDate() + ' ' + NAME_MONTH[init_today.getMonth()] + ' ' + init_today.getFullYear();
-    const [today, setToday] = useState(todayString);
-    // const [today, setToday] = useState(new Date());
+    const { rangeClicked, usageEList, usageBlist, costList, option, startDate, endDate, date, selectionRange, 
+    billList, totalCharge, avgCharge, totalConsumption, avgConsumption, avgConsumptionDay, currentPlan, today } = userDashboard
 
     const [emphasisStyle, setEmphasisStyle] = useState(init_emphasisStyle);
+
+    // console.log(init);
     
+    console.log('NMI request. ')
+    useEffect(() => {
+        if (!init) {
+            dispatch(initUpdate(email, start_time, end_time))
+        }
+    }, [])
+    
+
     // Change Plan Button - Open Our Plans in iO Energy Website in the same tab
     const handleChangePlanClick = () => {
         window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
@@ -122,6 +84,8 @@ const Dashboard = () => {
         setSelectionRagne(new_range);
     };
 
+
+    /*
     // Update all data on User Consumption page.
     // console.log("HandleUIupdate defined")
     const handleUIupdate = (init, start_date, end_date) => {
@@ -281,10 +245,14 @@ const Dashboard = () => {
     
     //initialize
     // console.log("handleUIupdate initialised")\
-    useEffect(()=>{handleUIupdate(false, start_time, end_time);}, []);
+    // useEffect(()=>{handleUIupdate(false, start_time, end_time);}, []);
     // handleUIupdate(false, start_time, end_time);
     // console.log("111111111111111111111111111111111111111111111")
     //const greeting = 'Hello Function Component!';
+
+
+    */
+
     return (
         <DashboardWrapper>
             <DashboardNavigator>
@@ -398,7 +366,7 @@ const Dashboard = () => {
 
                     </GraphContextWrapper>
                     <GraphGraph>
-                        <ReactEcharts option = {option} style={{height: "600px", }}/>
+                        <ReactEcharts option={option} style={{height: "600px"}}/>
                     </GraphGraph>
                 </GraphWrapper>
 
