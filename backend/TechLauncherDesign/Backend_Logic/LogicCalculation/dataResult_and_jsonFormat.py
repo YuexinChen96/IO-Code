@@ -3,9 +3,9 @@ import datetime
 import pandas as pd
 import json
 from dateutil import rrule
-from .encapsulation_functions.page1_cal import getuser_usage_charge,get_recommend_plan
+from .encapsulation_functions.user_page_cal import getuser_usage_charge,get_recommend_plan
 from .encapsulation_functions.get_data_from_database import get_user_consumption, get_user_info, account_to_nmi_init
-from .encapsulation_functions.page2_cal import get_nem_sa_data
+from .encapsulation_functions.environment_page_cal import get_nem_sa_data
 
 
 def getPage1data(nmi, start, end):
