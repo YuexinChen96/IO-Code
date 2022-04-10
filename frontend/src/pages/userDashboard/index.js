@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
+// redux
 import { useSelector, useDispatch } from 'react-redux';
+import { initUpdate } from '../../store/actions/userDashboardAction'
 
 import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -27,11 +29,9 @@ import {//dashboard组件
     ChangePlanButton
 } from './style';
 
-function Dashboard() {
-    // declare redux
-    const init = useSelector(state => state.init);
-    const nmi_id = useSelector(state => state.nmi_id);
 
+
+const Dashboard = () => {
     // declare const value
     const NAME_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const init_emphasisStyle = {
@@ -40,47 +40,30 @@ function Dashboard() {
             shadowColor: 'rgba(0,0,0,0.3)'
         }
     };
+    // testing
+    const email = 'Usfkz@Xflkv.com'
+
+    // declare redux
+    const dispatch = useDispatch()
+    const userDashboard = useSelector(state => state.userDashboard)
+    const { init, nmi, nmi_id } = userDashboard
 
     // console.log(init);
-    const dispatch = useDispatch();
-
-
-    // check whether initailize & first call to get the nmi
-    useEffect(() => {
-        if (!init) {
-            const email = 'Usfkz@Xflkv.com';
-            axios.post('http://localhost:8000/nmi/', {'email' : email}).then((res) => {
-                // update init nmi list and nmi id
-                console.log(res.data.nmi[0]);
-                dispatch({ type : 'init', nmi_list : res.data.nmi , nmi_id : res.data.nmi[0] });
-                
-                // check id & init dashboard values 
-                if (nmi_id != '') {
-                    console.log('hahahaha')
-                    console.log(nmi_id);
-                    //set up start & end date
-                    //const data = {'nmi_id': nmi_id, 'start':start_date, 'end':end_date};
-
-                    // axios.post('http://localhost:8000/page1/', data).then((res) => {
-
-                    // });
-                    
-                } else {
-                    // may be useless
-                    console.log('This email address does not have a NMI');
-                }
-            });
-        }
-    }, []);
-
+    if (!init) {
+        console.log('initialize dashboard. ')
+        useEffect(() => {
+            dispatch(initUpdate(email))
+        }, [dispatch])
+    }
     
-
+    
+ 
     // first call to get the nmi
 
 
 
     // temp variables
-    const nmi = '2001010596';//;"2001010418"
+    // const nmi = '2001010596';//;"2001010418"
     const start_time = '2021-11-01' ;//'2021-5-1';
     const end_time= "2021-11-20";//'2021-5-15';]
 
