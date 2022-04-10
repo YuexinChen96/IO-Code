@@ -204,7 +204,7 @@ def get_recommend_plan(currentPlanId,currentSumCharge,usertype,monthdata):
     with open(plan_file_path, "r", newline="", encoding='utf-8') as f:
         rd = csv.reader(f)
         alldata = np.array(list(rd), dtype=object)
-        bestplanid=0
+        bestplanid=currentPlanId
         if usertype=='RESIDENT': planlist=[1,2,3]
         else: planlist=[4,5,6]
         bestcharge=currentSumCharge
