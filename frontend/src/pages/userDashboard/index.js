@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { initUpdate, UIUpdate } from '../../store/actions/userDashboardAction'
+import { initUpdate, UIUpdate, rangeClick } from '../../store/actions/userDashboardAction'
 
 import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -29,6 +29,127 @@ import {//dashboard组件
     ChangePlanButton
 } from './style';
 
+const formatOption = (graphUsageMax, graphAbscostMax, avgConsumptionHour, avgChargeHour, avgFeedinHour) => {
+    return {
+        legend: {
+            data: ['Cost', 'Usage', 'Solar'],
+            left: '10%',
+        },
+        tooltip : {
+            trigger : 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        grid: {
+            left: '5%',
+            bottom: '10%',
+            right: '5%',
+        },
+        toolbox: {
+            feature: {
+                dataView: { show: true, readOnly: true },
+                restore: { show: false },
+                saveAsImage: { show: true }
+            }
+        },
+        xAxis: [
+        {
+            type: 'category',
+            axisTick: {
+            alignWithLabel: true
+            },
+            data: ['0am', '1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '13pm',
+            '14pm','15pm','16pm','17pm','18pm','19pm','20pm','21pm','22pm','23pm']
+        }
+        ],
+        yAxis: [
+        {
+            type: 'value',
+            name: 'Usage',
+            min: -graphUsageMax,
+            max: graphUsageMax,
+            position: 'right',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                color: '#81F1C5'
+                }
+            },
+            axisLabel: {
+                formatter: '{value} kWh'
+            }
+        },
+        {
+            type: 'value',
+            name: 'Cost',
+            min: -graphAbscostMax,
+            max: graphAbscostMax,
+            position: 'left',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                color: '#FF127F'
+                }
+            },
+            axisLabel: {
+                formatter: '{value} $'
+            }
+        },
+        {}
+        ],
+        series: [
+        {
+            name: 'Usage',
+            type: 'bar',
+            stack: 'one',
+            data: avgConsumptionHour,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0,0,0,0.3)'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: '#81F1C5',
+                    borderRadius: '10%',
+                }
+            },
+        },
+        {
+            name: 'Cost',
+            type: 'line',
+            smooth: true,
+            yAxisIndex: 1,
+            data: avgChargeHour,
+            itemStyle: {
+                normal: {
+                    color: '#FF127F',
+                }
+            },
+        },
+        {
+            name: 'Solar',
+            type: 'bar',
+            stack: 'one',
+            data: avgFeedinHour,
+            emphasisStyle: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(0,0,0,0.3)'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: '#FFFF00',
+                    borderRadius: '10%',
+                }
+            },
+        }
+        ],
+    }
+}
 
 
 const Dashboard = () => {
@@ -49,209 +170,36 @@ const Dashboard = () => {
     const dispatch = useDispatch()
     const userDashboard = useSelector(state => state.userDashboard)
     const { init, nmi, nmi_id } = userDashboard
-    const { rangeClicked, usageEList, usageBlist, costList, option, startDate, endDate, date, selectionRange, 
-    billList, totalCharge, avgCharge, totalConsumption, avgConsumption, avgConsumptionDay, currentPlan, today } = userDashboard
+    const { rangeClicked, startDateString, endDateString, date, start_date, end_date,
+    billList, totalCharge, avgCharge, totalConsumption, avgConsumption, avgConsumptionDay, currentPlan, today,
+    graphUsageMax, graphAbscostMax, usageEList, usageBlist, costList } = userDashboard
+    
+    // for date selector
+    const [select, setSelect] = useState([
+        {
+          startDate: (start_date == '') ? new Date(start_time) : new Date(start_date),
+          endDate: (end_date == '') ? new Date(end_time) : new Date(start_date),
+          key: 'selection'
+        }
+    ])
+    
 
-    const [emphasisStyle, setEmphasisStyle] = useState(init_emphasisStyle);
-
-    // console.log(init);
     
     console.log('NMI request. ')
+    const option = formatOption(graphUsageMax, graphAbscostMax, usageEList, costList, usageBlist)
+    console.log(option)
     useEffect(() => {
         if (!init) {
-            dispatch(initUpdate(email, start_time, end_time))
+            dispatch(initUpdate(email, start_time, end_time, NAME_MONTH))
         }
     }, [])
-    
+
 
     // Change Plan Button - Open Our Plans in iO Energy Website in the same tab
     const handleChangePlanClick = () => {
         window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
     };
 
-    // Handle whether new range is clicked.
-    const handleRangeClick = () => {
-        setRangeClicked(!rangeClicked);
-    };
-
-    // Select date range in the calendar
-    const handleSelect = (date) => {
-        const new_range = {
-            startDate: date.selection.startDate,
-            endDate: date.selection.endDate,
-            key: 'selection',
-        };
-        setSelectionRagne(new_range);
-    };
-
-
-    /*
-    // Update all data on User Consumption page.
-    // console.log("HandleUIupdate defined")
-    const handleUIupdate = (init, start_date, end_date) => {
-        
-        console.log(init);
-
-        if (!init) {
-            console.log('initialize');
-        } 
-        else {
-            console.log('request');
-
-            start_date = selectionRange.startDate.getFullYear().toString()+'-'+ (selectionRange.startDate.getMonth()+1).toString() +'-' + selectionRange.startDate.getDate().toString();
-
-            end_date = selectionRange.endDate.getFullYear().toString() + '-'+ (selectionRange.endDate.getMonth()+1).toString() + '-'+ selectionRange.endDate.getDate().toString(); 
-
-
-        }
-        
-        const data = {'nmi_id': nmi_id, 'start':start_date, 'end':end_date};
-
-        console.log(selectionRange);
-        console.log(data);
-
-        // send request
-        axios.post('http://localhost:8000/page1/', data).then((res) => {
-            const result = res;
-            console.log(result);
-
-            setOption(
-                {
-                    legend: {
-                        data: ['Cost', 'Usage', 'Solar'],
-                        left: '10%',
-                    },
-                    tooltip : {
-                        trigger : 'axis',
-                        axisPointer: {
-                            type: 'cross'
-                        }
-                    },
-                    grid: {
-                        left: '5%',
-                        bottom: '10%',
-                        right: '5%',
-                    },
-                    toolbox: {
-                        feature: {
-                            dataView: { show: true, readOnly: true },
-                            restore: { show: false },
-                            saveAsImage: { show: true }
-                        }
-                    },
-                    xAxis: [
-                    {
-                        type: 'category',
-                        axisTick: {
-                        alignWithLabel: true
-                        },
-                        data: ['0am', '1am', '2am', '3am', '4am', '5am', '6am', '7am', '8am', '9am', '10am', '11am', '12pm', '13pm',
-                        '14pm','15pm','16pm','17pm','18pm','19pm','20pm','21pm','22pm','23pm']
-                    }
-                    ],
-                    yAxis: [
-                    {
-                        type: 'value',
-                        name: 'Usage',
-                        min: -res.data.graph_usage_max,
-                        max: res.data.graph_usage_max,
-                        position: 'right',
-                        axisLine: {
-                            show: true,
-                            lineStyle: {
-                            color: '#81F1C5'
-                            }
-                        },
-                        axisLabel: {
-                            formatter: '{value} kWh'
-                        }
-                    },
-                    {
-                        type: 'value',
-                        name: 'Cost',
-                        min: -res.data.graph_abscost_max,
-                        max: res.data.graph_abscost_max,
-                        position: 'left',
-                        axisLine: {
-                            show: true,
-                            lineStyle: {
-                            color: '#FF127F'
-                            }
-                        },
-                        axisLabel: {
-                            formatter: '{value} $'
-                        }
-                    },
-                    {}
-                    ],
-                    series: [
-                    {
-                        name: 'Usage',
-                        type: 'bar',
-                        stack: 'one',
-                        data: res.data.avg_consumption_hour,
-                        emphasis: emphasisStyle,
-                        itemStyle: {
-                            normal: {
-                                color: '#81F1C5',
-                                borderRadius: '10%',
-                            }
-                        },
-                    },
-                    {
-                        name: 'Cost',
-                        type: 'line',
-                        smooth: true,
-                        yAxisIndex: 1,
-                        data: res.data.avg_charge_hour,
-                        itemStyle: {
-                            normal: {
-                                color: '#FF127F',
-                            }
-                        },
-                    },
-                    {
-                        name: 'Solar',
-                        type: 'bar',
-                        stack: 'one',
-                        data: res.data.avg_feedin_hour,
-                        emphasisStyle: emphasisStyle,
-                        itemStyle: {
-                            normal: {
-                                color: '#FFFF00',
-                                borderRadius: '10%',
-                            }
-                        },
-                    }
-                    ],
-                });
-            
-            setAvgCharge(res.data.avg_charge);
-            setAvgConsumption(res.data.avg_consumption_hour_avg);
-            setAvgConsumptionDay(res.data.avg_consumption_day_avg);
-            setTotalCharge(res.data.sum_charge);
-            setTotalConsumption(res.data.sum_consumption);
-            setCurrentPlan(res.data.current_plan);
-        })
-        
-        // handle rangeClick and display on title
-        if (init){
-            setRangeClicked(!rangeClicked);
-            setStartDate(selectionRange.startDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.startDate.getMonth()]);
-            setEndDate(selectionRange.endDate.getDate().toString() + ' ' + NAME_MONTH[selectionRange.endDate.getMonth()]);
-
-        }
-    };
-    
-    //initialize
-    // console.log("handleUIupdate initialised")\
-    // useEffect(()=>{handleUIupdate(false, start_time, end_time);}, []);
-    // handleUIupdate(false, start_time, end_time);
-    // console.log("111111111111111111111111111111111111111111111")
-    //const greeting = 'Hello Function Component!';
-
-
-    */
 
     return (
         <DashboardWrapper>
@@ -283,23 +231,23 @@ const Dashboard = () => {
                 <SelectWrapper>
                     <SelectText>
                         Usage from <font
-                        style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{startDate}</font> to&nbsp;
-                        <font style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{endDate}</font>
+                        style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{startDateString}</font> to&nbsp;
+                        <font style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{endDateString}</font>
                     </SelectText>
                     <SelectBox>
                         {rangeClicked?
                         <div>
-                            <SelectButton onClick={() => handleUIupdate(true, none, none)}>
+                            <SelectButton onClick={() => dispatch(UIUpdate(nmi_id, select[0], NAME_MONTH))}>
                                 Search
                             </SelectButton>
                             <DateRange
                                 style={{border:'solid', borderWidth:'1px', borderColor:'#E6EEFF'}}
                                 editableDateInputs={true}
-                                onChange={handleSelect}
-                                ranges={[selectionRange]}
-                                moveRangeOnFirstSelection={false}/>
+                                onChange={item => setSelect([item.selection])}
+                                moveRangeOnFirstSelection={false}
+                                ranges={select}/>
                         </div>:
-                        <SelectButton onClick={handleRangeClick}>
+                        <SelectButton onClick={() => dispatch(rangeClick())}>
                             Time range
                         </SelectButton>
                         }
