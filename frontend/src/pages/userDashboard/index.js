@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { initUpdate, UIUpdate, rangeClick } from '../../store/actions/userDashboardAction'
+import { initUpdate, UIUpdate, rangeClick, nmiClick } from '../../store/actions/userDashboardAction'
 
 import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -164,7 +164,9 @@ const Dashboard = () => {
     // testing
     const email = 'Usfkz@Xflkv.com'
     const start_time = '2021-11-01' //'2021-5-1';
-    const end_time= "2021-11-20"//'2021-5-15';]
+    const end_time= "2021-11-20"//'2021-5-15';
+    //const start_time = '2022-3-22' //'2021-5-1';
+    //const end_time= "2022-4-10"//'2021-5-15';]
 
     // declare redux
     const dispatch = useDispatch()
@@ -200,6 +202,8 @@ const Dashboard = () => {
         window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
     };
 
+    const nmi_list = ['2001000514', '2001010596', '2002338618']
+
 
     return (
         <DashboardWrapper>
@@ -226,128 +230,143 @@ const Dashboard = () => {
                     <WelcomeText style={{fontWeight: '600'}}>Welcome, Yuexin</WelcomeText>
                 </WelcomeWrapper>
 
-                <TabBar>NMI: 2001010596</TabBar>
-
-                <SelectWrapper>
-                    <SelectText>
-                        Usage from <font
-                        style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{startDateString}</font> to&nbsp;
-                        <font style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{endDateString}</font>
-                    </SelectText>
-                    <SelectBox>
-                        {rangeClicked?
+                <div className='TabShow'>
+                { Object.keys(nmi_list).map((item, index)=>{
+                    return (
+                    <div key={index} value={nmi_list[item]}>
+                        <TabBar onClick={() => dispatch(nmiClick(nmi_list[index], start_date, end_date, NAME_MONTH))}> NMI: {nmi_list[index]} 
+                        </TabBar>
+                        { 
+                        (nmi_list[index] == nmi_id) ? 
                         <div>
-                            <SelectButton onClick={() => dispatch(UIUpdate(nmi_id, select[0], NAME_MONTH))}>
-                                Search
-                            </SelectButton>
-                            <DateRange
-                                style={{border:'solid', borderWidth:'1px', borderColor:'#E6EEFF'}}
-                                editableDateInputs={true}
-                                onChange={item => setSelect([item.selection])}
-                                moveRangeOnFirstSelection={false}
-                                ranges={select}/>
-                        </div>:
-                        <SelectButton onClick={() => dispatch(rangeClick())}>
-                            Time range
-                        </SelectButton>
+                            <SelectWrapper>
+                                <SelectText>
+                                    Usage from <font
+                                    style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{startDateString}</font> to&nbsp;
+                                    <font style={{color: '#FF127F', textDecoration: 'underline', fontWeight: 'bold'}}>{endDateString}</font>
+                                </SelectText>
+                                <SelectBox>
+                                    {rangeClicked?
+                                    <div>
+                                        <SelectButton onClick={() => dispatch(UIUpdate(nmi_id, select[0], NAME_MONTH))}>
+                                            Search
+                                        </SelectButton>
+                                        <DateRange
+                                            style={{border:'solid', borderWidth:'1px', borderColor:'#E6EEFF'}}
+                                            editableDateInputs={true}
+                                            onChange={item => setSelect([item.selection])}
+                                            moveRangeOnFirstSelection={false}
+                                            ranges={select}/>
+                                    </div>:
+                                    <SelectButton onClick={() => dispatch(rangeClick())}>
+                                        Time range
+                                    </SelectButton>
+                                    }
+                                </SelectBox>
+                            </SelectWrapper>
+                                
+                            <BoxWrapper>
+                                <Box>
+                                    <BoxContent>
+                                        <BoxText1>Your charges</BoxText1>
+                                        <BoxText2>${totalCharge}</BoxText2>
+                                        <BoxText1 style={{marginTop: '70px'}}>Your consumption</BoxText1>
+                                        <BoxText2>{totalConsumption}<BoxText1
+                                            style={{marginLeft: '10px', marginTop: '18px'}}>kW</BoxText1></BoxText2>
+                                    </BoxContent>
+                                </Box>
+                                <Box2>
+                                    <BoxContent>
+                                        <BoxText1>Your current plan is</BoxText1>
+                                        <BoxText2>{currentPlan}<ColorRed>.</ColorRed></BoxText2>
+                                        <BoxText1 style={{marginTop: '130px'}}>Powered by <font
+                                            style={{color: '#FF127F', fontWeight: 'bold'}}>io energy</font></BoxText1>
+                                    </BoxContent>
+                                </Box2>
+                                <Box1>
+                                    <BoxContent>
+                                    <BoxText1>Recommended Plan: </BoxText1>
+                                        <PlanTextWrapper>
+                                            <PlanText style={{fontWeight:'bold', fontSize:'40px'}}> Lightning.
+                                            </PlanText>
+                                            <PlanText style={{marginTop:'30px', fontSize:'16px'}}>
+                                            Changing plan can reduce your cost and carbon by <font style={{fontWeight:'bold'}}>17%</font>
+                                            </PlanText>
+                                            <Link to={{ pathname: "https://www.ioenergy.com.au/OurPlans/" }} target="_self">
+                                            <ChangePlanButton onClick={handleChangePlanClick}>
+                                                Change Plan
+                                            </ChangePlanButton>
+                                            </Link>
+                                        </PlanTextWrapper>
+                                    </BoxContent>
+                                </Box1>
+                            </BoxWrapper>
+
+                            <Context1>Average hourly usage</Context1>
+
+                            <GraphWrapper>
+                                <GraphContextWrapper>
+                                    <GraphContext>
+                                        <BoxText1>Charges</BoxText1>
+                                        <BoxText2 style={{fontSize: '30px', marginTop: '12px'}}>${avgCharge}</BoxText2>
+                                    </GraphContext>
+                                    <GraphContext>
+                                        <BoxText1>Consumption(kWh)</BoxText1>
+                                        <BoxText2 style={{fontSize: '30px', marginTop: '12px'}}>{avgConsumption}</BoxText2>
+                                    </GraphContext>
+                                    <GraphContext>
+                                        <BoxText1>Date</BoxText1>
+                                        <BoxText2 style={{fontSize: '28px', marginTop: '12px'}}>{today}</BoxText2>
+                                    </GraphContext>
+                                    <GraphContext>
+                                        <BoxText1>Daily avg (kWh)</BoxText1>
+                                        <BoxText2 style={{color: '#81F1C5', fontWeight: 'bold', fontSize: '30px', marginTop: '12px'}}>{avgConsumptionDay}</BoxText2>
+                                    </GraphContext>
+
+                                </GraphContextWrapper>
+                                <GraphGraph>
+                                    <ReactEcharts option={option} style={{height: "600px"}}/>
+                                </GraphGraph>
+                            </GraphWrapper>
+
+                            <BottomWrapper>
+                                <BottomLeft>
+                                    <LeftTitleWrapper>
+                                        <Context1>Electricity bill history&nbsp;<font style={{color:'#FF127F', fontSize:'20px'}}>See all</font>
+                                        </Context1>
+                                    </LeftTitleWrapper>
+                                    <GraphContextWrapper style={{height:'80px'}}>
+                                        <GraphContext style = {{width:'35%'}}>
+                                            <BoxText1 style={{fontSize: '13px'}}>Bill period</BoxText1>
+                                        </GraphContext>
+                                        <GraphContext>
+                                            <BoxText1 style={{fontSize: '13px'}}> Consumption(kWh) </BoxText1>
+                                        </GraphContext>
+                                        <GraphContext>
+                                            <BoxText1 style={{fontSize: '13px'}}> Peak usage(kWh) </BoxText1>
+                                        </GraphContext>
+                                        <GraphContext>
+                                            <BoxText1 style={{fontSize: '13px'}}> Amount </BoxText1>
+                                        </GraphContext>
+                                        <GraphContext>
+                                            <BoxText1 style={{fontSize: '13px'}}> Paid </BoxText1>
+                                        </GraphContext>
+                                    </GraphContextWrapper>
+                                    <GraphWrapper>
+                                        {billList}
+                                    </GraphWrapper>
+                                </BottomLeft>
+                            </BottomWrapper>
+                        </div>
+                        
+                        
+                        : <div />
                         }
-                    </SelectBox>
-                </SelectWrapper>
-                    
-                <BoxWrapper>
-                    <Box>
-                        <BoxContent>
-                            <BoxText1>Your charges</BoxText1>
-                            <BoxText2>${totalCharge}</BoxText2>
-                            <BoxText1 style={{marginTop: '70px'}}>Your consumption</BoxText1>
-                            <BoxText2>{totalConsumption}<BoxText1
-                                style={{marginLeft: '10px', marginTop: '18px'}}>kW</BoxText1></BoxText2>
-                        </BoxContent>
-                    </Box>
-                    <Box2>
-                        <BoxContent>
-                            <BoxText1>Your current plan is</BoxText1>
-                            <BoxText2>{currentPlan}<ColorRed>.</ColorRed></BoxText2>
-                            <BoxText1 style={{marginTop: '130px'}}>Powered by <font
-                                style={{color: '#FF127F', fontWeight: 'bold'}}>io energy</font></BoxText1>
-                        </BoxContent>
-                    </Box2>
-                    <Box1>
-                        <BoxContent>
-                        <BoxText1>Recommended Plan: </BoxText1>
-                            <PlanTextWrapper>
-                                <PlanText style={{fontWeight:'bold', fontSize:'40px'}}> Lightning.
-                                </PlanText>
-                                <PlanText style={{marginTop:'30px', fontSize:'16px'}}>
-                                Changing plan can reduce your cost and carbon by <font style={{fontWeight:'bold'}}>17%</font>
-                                </PlanText>
-                                <Link to={{ pathname: "https://www.ioenergy.com.au/OurPlans/" }} target="_self">
-                                <ChangePlanButton onClick={handleChangePlanClick}>
-                                    Change Plan
-                                </ChangePlanButton>
-                                </Link>
-                            </PlanTextWrapper>
-                        </BoxContent>
-                    </Box1>
-                </BoxWrapper>
+                    </div>
+                    )
+                })}
+                </div>
 
-                <Context1>Average hourly usage</Context1>
-
-                <GraphWrapper>
-                    <GraphContextWrapper>
-                        <GraphContext>
-                            <BoxText1>Charges</BoxText1>
-                            <BoxText2 style={{fontSize: '30px', marginTop: '12px'}}>${avgCharge}</BoxText2>
-                        </GraphContext>
-                        <GraphContext>
-                            <BoxText1>Consumption(kWh)</BoxText1>
-                            <BoxText2 style={{fontSize: '30px', marginTop: '12px'}}>{avgConsumption}</BoxText2>
-                        </GraphContext>
-                        <GraphContext>
-                            <BoxText1>Date</BoxText1>
-                            <BoxText2 style={{fontSize: '28px', marginTop: '12px'}}>{today}</BoxText2>
-                        </GraphContext>
-                        <GraphContext>
-                            <BoxText1>Daily avg (kWh)</BoxText1>
-                            <BoxText2 style={{color: '#81F1C5', fontWeight: 'bold', fontSize: '30px', marginTop: '12px'}}>{avgConsumptionDay}</BoxText2>
-                        </GraphContext>
-
-                    </GraphContextWrapper>
-                    <GraphGraph>
-                        <ReactEcharts option={option} style={{height: "600px"}}/>
-                    </GraphGraph>
-                </GraphWrapper>
-
-                <BottomWrapper>
-                    <BottomLeft>
-                        <LeftTitleWrapper>
-                            <Context1>Electricity bill history&nbsp;<font style={{color:'#FF127F', fontSize:'20px'}}>See all</font>
-                            </Context1>
-                        </LeftTitleWrapper>
-                        <GraphContextWrapper style={{height:'80px'}}>
-                            <GraphContext style = {{width:'35%'}}>
-                                <BoxText1 style={{fontSize: '13px'}}>Bill period</BoxText1>
-                            </GraphContext>
-                            <GraphContext>
-                                <BoxText1 style={{fontSize: '13px'}}> Consumption(kWh) </BoxText1>
-                            </GraphContext>
-                            <GraphContext>
-                                <BoxText1 style={{fontSize: '13px'}}> Peak usage(kWh) </BoxText1>
-                            </GraphContext>
-                            <GraphContext>
-                                <BoxText1 style={{fontSize: '13px'}}> Amount </BoxText1>
-                            </GraphContext>
-                            <GraphContext>
-                                <BoxText1 style={{fontSize: '13px'}}> Paid </BoxText1>
-                            </GraphContext>
-                        </GraphContextWrapper>
-                        <GraphWrapper>
-                            {billList}
-                        </GraphWrapper>
-                    </BottomLeft>
-                </BottomWrapper>
-
-                <TabBar>NMI: 2001010596</TabBar>
             </ContentWrapper>
         </DashboardWrapper>
     );

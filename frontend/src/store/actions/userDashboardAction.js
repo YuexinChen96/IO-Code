@@ -1,4 +1,4 @@
-import { INITIALIZE, UI_UPDATE, RANGECLICK, USERS_ERROR } from '../types'
+import { INITIALIZE, UI_UPDATE, RANGECLICK, NMI_CLICK, USERS_ERROR } from '../types'
 import axios from 'axios'
 
 export const initUpdate = (email, start_time, end_time, NAME_MONTH) => async dispatch => {
@@ -19,6 +19,34 @@ export const initUpdate = (email, start_time, end_time, NAME_MONTH) => async dis
                     start_date : start_time,
                     end_date : end_time
                 })
+            })
+        })
+    } catch(error) {
+        dispatch({
+            type : USERS_ERROR,
+            payload : error
+        })
+    }
+}
+
+export const nmiClick = (nmi_id, start_date, end_date, NAME_MONTH) => async dispatch => {
+    try {
+        
+        const start_time = NAME_MONTH[start_date.split('-')[1] - 1] + ' ' + start_date.split('-')[2]
+        const end_time = NAME_MONTH[end_date.split('-')[1] - 1] + ' ' + end_date.split('-')[2]
+        
+        const data = {'nmi_id': nmi_id, 'start':start_date, 'end':end_date}
+        console.log(data)
+        axios.post('http://localhost:8000/page1/', data).then((res) => {
+            console.log(res)
+            dispatch({
+                type : NMI_CLICK,
+                nmi_id : nmi_id,
+                ret : res.data,
+                start_time_str : start_time,
+                end_time_str : end_time,
+                start_date : start_date,
+                end_date : end_date
             })
         })
     } catch(error) {
