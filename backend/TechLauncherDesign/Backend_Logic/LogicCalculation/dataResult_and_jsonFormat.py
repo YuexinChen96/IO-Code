@@ -36,8 +36,8 @@ def getPage1data(nmi, start, end):
     currentcharge = float(usageAndcharge_dict['sum_charge'])
     recommend_plan, best_charge = get_recommend_plan(plan, currentcharge, usertype, monthdata)
     print(plan_id2name[recommend_plan], best_charge)
-    plan_info = [userinfo[-1], plan_id2name[recommend_plan], (best_charge - currentcharge) / currentcharge]
-
+    plan_info = [userinfo[-1], plan_id2name[recommend_plan], (best_charge - currentcharge) / currentcharge if currentcharge!=0 else 0]
+    print(plan_info)
     current_planRate = planid2rate[plan]
     # --------- data format -----------
     # usageAndcharge_dict:
@@ -58,13 +58,15 @@ def getPage2data():
 
 
 # --------- for testting -----------
-# start_str='2021-5-1'
-# end_str='2021-6-30'
-# # userinfo= getdata_and_cal("2001010596", start_str, end_str)
-# userinfo=getPage1data('2001010596',start_str,end_str)
 # nmi = "2001010596"
 # start_str = '2021-5-1'
 # end_str = '2021-6-30'
+# usageAndcharge_dict, plan_info, current_planRate, plan = getPage1data(nmi, start_str, end_str)
+# renewables, each_energy = getPage2data()
+
+# nmi = "2001704865"
+# start_str = '2021-11-2'
+# end_str = '2021-11-4'
 # usageAndcharge_dict, plan_info, current_planRate, plan = getPage1data(nmi, start_str, end_str)
 # renewables, each_energy = getPage2data()
 

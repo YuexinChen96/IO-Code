@@ -3,6 +3,11 @@ from datetime import datetime
 
 def getuser_usage_charge(start,end,plan_id,datadict):
     '''->tuple(list,float)'''
+    if datadict==[]:
+        print("=============== There are no data during this time ===========")
+        usageinfo={'sum_consumption': '0.0', 'avg_consumption_day_avg': '0.0', 'avg_consumption_hour': [0.0 for _ in range(24)],'avg_feedin_hour': [0.0 for _ in range(24)],
+                   'avg_consumption_hour_avg': '0.0', 'avg_charge_hour':[0.0 for _ in range(24)],'sum_charge': '0.0', 'avg_charge': '0.0'}
+        return usageinfo,()
 
     # datadict=np.insert(datadict[:,1:].astype(float),0,datadict[:,0],axis=1)
     # print(datadict[0])
@@ -191,6 +196,8 @@ def getuser_usage_charge(start,end,plan_id,datadict):
 
 
 def get_recommend_plan(currentPlanId,currentSumCharge,usertype,monthdata):
+    if monthdata==():
+        return currentPlanId,currentSumCharge
 
     allmonths_e1 = monthdata[0]
     allmonths_e2 = monthdata[1]
