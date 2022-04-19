@@ -205,7 +205,7 @@ const Dashboard = () => {
                     <Boxcircle>
                     </Boxcircle>
                 </DashboardBox1>
-                <Link to='/dashboard2'>
+                <Link to='/cleanEnergy'>
                 <DashboardBox2>
                     <Boxcircle2>
                     </Boxcircle2>

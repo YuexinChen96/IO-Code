@@ -24,6 +24,11 @@ const defaultState = {
     graphAbscostMax : 5,
     avgCurt: [],
     avgWshr: [],
+    avgGas : [],
+    avgImport : [],
+    avgRooftop : [],
+    avgSolar : [],
+    avgWind : [],
 };
 
 export default function(state = defaultState, action){
@@ -42,6 +47,11 @@ export default function(state = defaultState, action){
                 graphAbscostMax : action.ret2.graph_abscost_max,
                 avgWshr : action.ret2.avg_wshr_hour,
                 avgCurt : action.ret2.avg_curt_hour,
+                avgGas : action.ret2.avg_gas_hour,
+                avgImport : action.ret2.avg_import_hour,
+                avgRooftop : action.ret2.avg_rooftop_hour,
+                avgSolar : action.ret2.avg_solar_hour,
+                avgWind : action.ret2.avg_wind_hour,
 
                 avgCharge : action.ret2.avg_charge,
                 avgConsumption : action.ret2.avg_consumption_hour_avg,
@@ -74,6 +84,11 @@ export default function(state = defaultState, action){
                 graphAbscostMax : action.ret. graph_abscost_max,
                 avgWshr : action.ret.avg_wshr_hour,
                 avgCurt : action.ret.avg_curt_hour,
+                avgGas : action.ret.avg_gas_hour,
+                avgImport : action.ret.avg_import_hour,
+                avgRooftop : action.ret.avg_rooftop_hour,
+                avgSolar : action.ret.avg_solar_hour,
+                avgWind : action.ret.avg_wind_hour,
 
                 avgCharge : action.ret.avg_charge,
                 avgConsumption : action.ret.avg_consumption_hour_avg,
