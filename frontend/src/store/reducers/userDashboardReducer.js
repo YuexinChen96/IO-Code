@@ -22,6 +22,8 @@ const defaultState = {
     currentPlan : '',
     graphUsageMax : 5, 
     graphAbscostMax : 5,
+    avgCurt: [],
+    avgWshr: [],
 };
 
 export default function(state = defaultState, action){
@@ -37,7 +39,9 @@ export default function(state = defaultState, action){
                 costList : action.ret2.avg_charge_hour,
                 usageBlist : action.ret2.avg_feedin_hour,
                 graphUsageMax : action.ret2.graph_usage_max,
-                graphAbscostMax : action.ret2. graph_abscost_max,
+                graphAbscostMax : action.ret2.graph_abscost_max,
+                avgWshr : action.ret2.avg_wshr_hour,
+                avgCurt : action.ret2.avg_curt_hour,
 
                 avgCharge : action.ret2.avg_charge,
                 avgConsumption : action.ret2.avg_consumption_hour_avg,
@@ -68,6 +72,8 @@ export default function(state = defaultState, action){
                 usageBlist : action.ret.avg_feedin_hour,
                 graphUsageMax : action.ret.graph_usage_max,
                 graphAbscostMax : action.ret. graph_abscost_max,
+                avgWshr : action.ret2.avg_wshr_hour,
+                avgCurt : action.ret2.avg_curt_hour,
 
                 avgCharge : action.ret.avg_charge,
                 avgConsumption : action.ret.avg_consumption_hour_avg,
