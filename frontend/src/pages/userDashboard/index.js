@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { initUpdate, UIUpdate, rangeClick, nmiClick } from '../../store/actions/userDashboardAction'
+import { initUpdate, UIUpdate, rangeClick, nmiClick, changePlan } from '../../store/actions/userDashboardAction'
 
 import {DateRange} from 'react-date-range';
 import 'react-date-range/dist/styles.css';
@@ -12,7 +12,8 @@ import ReactEcharts from 'echarts-for-react';
 
 import axios from 'axios';
 
-import {//dashboard组件
+//dashboard components
+import {
     DashboardWrapper, DashboardNavigator, DashboardLogo, DashboardBox1, DashboardBox2,
     TabBar,
     Boxcircle, Boxcircle2,
@@ -151,7 +152,6 @@ const formatOption = (graphUsageMax, graphAbscostMax, avgConsumptionHour, avgCha
     }
 }
 
-
 const Dashboard = () => {
     // declare const value
     const NAME_MONTH = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -185,8 +185,6 @@ const Dashboard = () => {
         }
     ])
     
-
-    
     console.log('NMI request. ')
     const option = formatOption(graphUsageMax, graphAbscostMax, usageEList, costList, usageBlist)
     console.log(option)
@@ -196,14 +194,7 @@ const Dashboard = () => {
         }
     }, [])
 
-
-    // Change Plan Button - Open Our Plans in iO Energy Website in the same tab
-    const handleChangePlanClick = () => {
-        window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
-    };
-
     const nmi_list = ['2001000514', '2001010596', '2002338618']
-
 
     return (
         <DashboardWrapper>
@@ -293,7 +284,7 @@ const Dashboard = () => {
                                             Changing plan can reduce your cost and carbon by <font style={{fontWeight:'bold'}}>17%</font>
                                             </PlanText>
                                             <Link to={{ pathname: "https://www.ioenergy.com.au/OurPlans/" }} target="_self">
-                                            <ChangePlanButton onClick={handleChangePlanClick}>
+                                            <ChangePlanButton onClick = {() => dispatch(changePlan())}>
                                                 Change Plan
                                             </ChangePlanButton>
                                             </Link>

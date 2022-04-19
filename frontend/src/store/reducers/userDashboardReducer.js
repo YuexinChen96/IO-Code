@@ -1,4 +1,4 @@
-import { INITIALIZE, UI_UPDATE, RANGECLICK, NMI_CLICK, USERS_ERROR } from '../types'
+import { INITIALIZE, UI_UPDATE, RANGECLICK, NMI_CLICK, USERS_ERROR, CHANGE_PLAN } from '../types'
 
 const defaultState = {
 	init: false,
@@ -72,8 +72,8 @@ export default function(state = defaultState, action){
                 usageBlist : action.ret.avg_feedin_hour,
                 graphUsageMax : action.ret.graph_usage_max,
                 graphAbscostMax : action.ret. graph_abscost_max,
-                avgWshr : action.ret2.avg_wshr_hour,
-                avgCurt : action.ret2.avg_curt_hour,
+                avgWshr : action.ret.avg_wshr_hour,
+                avgCurt : action.ret.avg_curt_hour,
 
                 avgCharge : action.ret.avg_charge,
                 avgConsumption : action.ret.avg_consumption_hour_avg,
@@ -118,7 +118,11 @@ export default function(state = defaultState, action){
         case USERS_ERROR:
             return {
                 loading : false,
-                error : action.payload
+                error : action.payload,
+            }
+        case CHANGE_PLAN:
+            return {
+                ...state,
             }
         default: return state
     }

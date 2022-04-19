@@ -1,4 +1,4 @@
-import { INITIALIZE, UI_UPDATE, RANGECLICK, NMI_CLICK, USERS_ERROR } from '../types'
+import { INITIALIZE, UI_UPDATE, RANGECLICK, NMI_CLICK, USERS_ERROR, CHANGE_PLAN } from '../types'
 import axios from 'axios'
 
 export const initUpdate = (email, start_time, end_time, NAME_MONTH) => async dispatch => {
@@ -38,7 +38,7 @@ export const nmiClick = (nmi_id, start_date, end_date, NAME_MONTH) => async disp
         const data = {'nmi_id': nmi_id, 'start':start_date, 'end':end_date}
         console.log(data)
         axios.post('http://localhost:8000/page1/', data).then((res) => {
-            console.log(res)
+            console.log(res.data)
             dispatch({
                 type : NMI_CLICK,
                 nmi_id : nmi_id,
@@ -93,6 +93,20 @@ export const rangeClick = () => async dispatch => {
     try {
         dispatch({
             type : RANGECLICK,
+        })
+    } catch(error) {
+        dispatch({
+            type : USERS_ERROR,
+            payload : error
+        })
+    }
+}
+
+export const changePlan = () => async dispatch => {
+    try {
+        window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
+        dispatch({
+            type : CHANGE_PLAN,
         })
     } catch(error) {
         dispatch({
