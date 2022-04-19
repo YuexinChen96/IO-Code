@@ -47,7 +47,7 @@ export default function(state = defaultState, action){
                 avgConsumption : action.ret2.avg_consumption_hour_avg,
                 avgConsumptionDay : action.ret2.avg_consumption_day_avg,
                 totalCharge : action.ret2.sum_charge,
-                totalConsumption : action.ret2.totsum_consumption,
+                totalConsumption : action.ret2.sum_consumption, //totsum_consumption
                 currentPlan : action.ret2.current_plan,
 
                 startDateString : action.start_time_str,
@@ -79,7 +79,7 @@ export default function(state = defaultState, action){
                 avgConsumption : action.ret.avg_consumption_hour_avg,
                 avgConsumptionDay : action.ret.avg_consumption_day_avg,
                 totalCharge : action.ret.sum_charge,
-                totalConsumption : action.ret.totsum_consumption,
+                totalConsumption : action.ret.sum_consumption, //totsum_consumption
                 currentPlan : action.ret.current_plan,
 
                 startDateString : action.start_time_str,
@@ -104,7 +104,7 @@ export default function(state = defaultState, action){
                 avgConsumption : action.ret.avg_consumption_hour_avg,
                 avgConsumptionDay : action.ret.avg_consumption_day_avg,
                 totalCharge : action.ret.sum_charge,
-                totalConsumption : action.ret.totsum_consumption,
+                totalConsumption : action.ret.sum_consumption, //totsum_consumption
                 currentPlan : action.ret.current_plan,
 
                 startDateString : action.start_time_str,

@@ -283,11 +283,9 @@ const Dashboard = () => {
                                             <PlanText style={{marginTop:'30px', fontSize:'16px'}}>
                                             Changing plan can reduce your cost and carbon by <font style={{fontWeight:'bold'}}>17%</font>
                                             </PlanText>
-                                            <Link to={{ pathname: "https://www.ioenergy.com.au/OurPlans/" }} target="_self">
                                             <ChangePlanButton onClick = {() => dispatch(changePlan())}>
                                                 Change Plan
                                             </ChangePlanButton>
-                                            </Link>
                                         </PlanTextWrapper>
                                     </BoxContent>
                                 </Box1>
