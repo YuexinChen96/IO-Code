@@ -3,8 +3,11 @@ import {Link, Redirect} from 'react-router-dom';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/core';
+import { changePlan } from '../../store/actions/userDashboardAction'
 
-import {//dashboard组件
+
+// Dashboard Component
+import {
     DashboardWrapper,
     DashboardNavigator,
     DashboardLogo,
@@ -448,14 +451,14 @@ const formatOption4 = () => {
                 }
             ],
             graphic: [
-            {　　　　　　　　　　　　　　　　
-                type: 'text',　　　　　　　　　　　　
+            {
+                type: 'text',
                 left: 'center',
                 top: '43%',
                 style: {
                     text: "72%",
                     textAlign: 'center',
-                    fill: '#000',　　　　　　　　
+                    fill: '#000',
                     width: 30,
                     height: 30,
                     fontSize: 40,
@@ -482,16 +485,13 @@ const formatOption4 = () => {
 
 const CleanEnergy = () => {
     //reducer variables
+    const dispatch = useDispatch()
     const cleanEnergy = useSelector(state => state.userDashboard)
     const { avgCurt, avgWshr, avgGas, avgWind, avgRooftop, avgImport, avgSolar } = cleanEnergy
     const option1 = formatOption1(avgCurt, avgWshr)
     const option2 = formatOption2(avgGas, avgImport, avgRooftop, avgSolar, avgWind)
     const option3 = formatOption3()
     const option4 = formatOption4()
-
-    const handleChangePlanClick = () => {
-        window.open("https://www.ioenergy.com.au/OurPlans/", "_self");
-    };
 
     return(
         <DashboardWrapper>
@@ -540,11 +540,9 @@ const CleanEnergy = () => {
                         Changing plan can reduce your cost and carbon by <font style={{fontWeight:'bold'}}>17%</font>
                         </PlanText>
                         </PlanTextWrapper>
-                        <Link to={{ pathname: "https://www.ioenergy.com.au/OurPlans/" }} target="_blank">
-                        <ChangePlanButton onClick={handleChangePlanClick}>
+                        <ChangePlanButton onClick = {() => dispatch(changePlan())}>
                             Change Plan
                         </ChangePlanButton>
-                        </Link>
                     </RecommmendWrapper>
                     <EnergySourcesWrapper>
                         <Context2>Energy Sources</Context2>
